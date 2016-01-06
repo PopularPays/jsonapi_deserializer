@@ -1,5 +1,7 @@
 # jsonapi_deserializer
 
+[![Build Status](https://travis-ci.org/PopularPays/jsonapi_deserializer.svg)](https://travis-ci.org/PopularPays/jsonapi_deserializer)
+
 Deserialize your [json-api](http://jsonapi.org/)
 payloads into easy-to-use hashes
 with attribute properties.
