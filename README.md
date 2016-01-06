@@ -1,6 +1,6 @@
 # jsonapi_deserializer
 
-[![Build Status](https://travis-ci.org/PopularPays/jsonapi_deserializer.svg)](https://travis-ci.org/PopularPays/jsonapi_deserializer) [![Dependency Status](https://gemnasium.com/PopularPays/jsonapi_deserializer.svg)](https://gemnasium.com/PopularPays/jsonapi_deserializer)
+[![Build Status](https://travis-ci.org/PopularPays/jsonapi_deserializer.svg)](https://travis-ci.org/PopularPays/jsonapi_deserializer) [![Dependency Status](https://gemnasium.com/PopularPays/jsonapi_deserializer.svg)](https://gemnasium.com/PopularPays/jsonapi_deserializer) [![Code Climate](https://codeclimate.com/github/PopularPays/jsonapi_deserializer/badges/gpa.svg)](https://codeclimate.com/github/PopularPays/jsonapi_deserializer)
 
 Deserialize your [json-api](http://jsonapi.org/)
 payloads into easy-to-use hashes
