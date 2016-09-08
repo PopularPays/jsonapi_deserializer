@@ -8,8 +8,8 @@ module JSONApi
       include Hashie::Extensions::MethodAccess
       include Hashie::Extensions::IndifferentAccess
 
-      def initialize(hash)
-        hash[:id] = hash[:id].to_s
+      def initialize(source_hash = nil, default = nil, &blk)
+        source_hash[:id] = source_hash[:id].to_s
         super
       end
     end
@@ -44,7 +44,7 @@ module JSONApi
       data.each do |datum|
         type = datum[:type]
         per_type = @store[type] ||= {}
-        record = Record.new(id: datum[:id].to_s, type: datum[:type]).merge(datum[:attributes] || {})
+        record = Record.new(id: datum[:id].to_s).merge(datum[:attributes] || {})
 
         per_type[record.id] = record
       end
