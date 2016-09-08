@@ -154,7 +154,7 @@ describe JSONApi::Deserializer do
   end
 
   it 'member responses are turned into a single Hashie' do
-    response = {
+     response = {
       data:
         {
           type: 'dogs',
@@ -363,5 +363,29 @@ describe JSONApi::Deserializer do
 
     one_deserialized = JSONApi::Deserializer.new(response).deserialized_hash
     expect(one_deserialized.owner).to be_nil
+  end
+
+  context 'nested assocation' do
+    let(:response) do
+      {
+        data: {
+          type: 'dogs',
+          id: '1',
+          relationships: {
+            owner: {
+              data: {
+                type: 'owner',
+                id: '3'
+              }
+            }
+          }
+        }
+      }
+    end
+    let(:record) { JSONApi::Deserializer.new(response).deserialized_hash }
+
+    it 'allows the initialization of a Record with another Record' do
+      expect(record.to_hash).to eq(JSONApi::Deserializer::Record.new(record).to_hash)
+    end
   end
 end
