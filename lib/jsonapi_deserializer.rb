@@ -1,6 +1,6 @@
-require "hashie"
-require "active_support/core_ext/hash/indifferent_access"
-require "jsonapi_deserializer/version"
+require 'hashie'
+require 'active_support/core_ext/hash/indifferent_access'
+require 'jsonapi_deserializer/version'
 
 module JSONApi
   class Deserializer
@@ -21,7 +21,7 @@ module JSONApi
     end
 
     def initialize(response)
-      @response = response.with_indifferent_access
+      @response = response.is_a?(Hash) ? response.with_indifferent_access : response
       @store = {}
 
       all_data = ([] << @response[:data] << @response[:included]).flatten.compact
