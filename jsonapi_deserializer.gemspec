@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "jsonapi_deserializer"
   spec.version       = JSONApi::Deserializer::VERSION
   spec.authors       = ["Trek Glowacki"]
-  spec.email         = ["trek@popularpays.com"]
+  spec.email         = ["trek.glowacki@gmail.com"]
 
   spec.summary       = "Deserialize your json-api payloads into easy-to-use hashes with attribute properties."
   spec.homepage      = "https://github.com/PopularPays/jsonapi_deserializer"
