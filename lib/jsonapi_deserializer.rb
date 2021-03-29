@@ -9,7 +9,14 @@ module JSONApi
       include Hashie::Extensions::IndifferentAccess
 
       def initialize(source_hash = nil, default = nil, &blk)
-        source_hash[:id] = source_hash[:id].to_s
+
+        if source_hash[:id]
+          source_hash[:id] = source_hash[:id].to_s
+        end
+
+        if source_hash[:lid]
+          source_hash[:lid] = source_hash[:lid].to_s
+        end
         super
       end
     end
@@ -18,11 +25,43 @@ module JSONApi
       include Hashie::Extensions::MethodAccess
       include Hashie::Extensions::IndifferentAccess
       include Hashie::Extensions::DeepFetch
+
+      def initialize(source_hash = nil, default = nil, &blk)
+        if source_hash[:id]
+          source_hash[:id] = source_hash[:id].to_s
+        end
+
+        if source_hash[:lid]
+          source_hash[:lid] = source_hash[:lid].to_s
+        end
+        super
+      end
+    end
+
+    class Store
+      def initialize
+        @db = {}
+      end
+
+      def set(type, id, lid, record)
+        per_type = @db[type] ||= {}
+        identifier = id || lid
+
+        per_type[identifier.to_s] = record
+      end
+
+      def get(type, id, lid)
+        per_type = @db[type]
+        return nil unless per_type
+
+        identifier = id || lid
+        per_type[identifier.to_s]
+      end
     end
 
     def initialize(response)
       @response = response.is_a?(Hash) ? response.with_indifferent_access : response
-      @store = {}
+      @store = Store.new
 
       all_data = ([] << @response[:data] << @response[:included]).flatten.compact
       store_records(all_data)
@@ -32,9 +71,9 @@ module JSONApi
     def deserialized_hash
       data = @response[:data]
       if data.is_a? Array
-        data.map { |datum| @store[datum[:type]][datum[:id].to_s] }
+        data.map { |datum| @store.get(datum[:type], datum[:id], datum[:lid]) }
       else
-        @store[data[:type]][data[:id].to_s]
+        @store.get(data[:type], data[:id], data[:lid])
       end
     end
 
@@ -42,26 +81,19 @@ module JSONApi
 
     def store_records(data)
       data.each do |datum|
-        type = datum[:type]
-        per_type = @store[type] ||= {}
-        record = Record.new(id: datum[:id].to_s).merge(datum[:attributes] || {})
-
-        per_type[record.id] = record
+        record = Record.new(id: datum[:id], lid: datum[:lid]).merge(datum[:attributes] || {})
+        @store.set(datum[:type], datum[:id], datum[:lid], record)
       end
     end
 
     def find_association(association)
       return nil unless association
-      if @store[association[:type]] && @store[association[:type]][association[:id].to_s]
-        @store[association[:type]][association[:id].to_s]
-      else
-        Assocation.new(association)
-      end
+      @store.get(association[:type], association[:id], association[:lid]) || Assocation.new(association)
     end
 
     def build_associations(data)
       data.each do |datum|
-        record = @store[datum[:type]][datum[:id].to_s]
+        record = @store.get(datum[:type], datum[:id], datum[:lid])
 
         relationships = datum[:relationships] || {}
         relationships.each do |relationship_name, relationship|
