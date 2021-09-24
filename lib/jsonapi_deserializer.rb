@@ -1,6 +1,7 @@
 require 'hashie'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'jsonapi_deserializer/version'
+require 'jsonapi_deserializer/configuration'
 
 module JSONApi
   class Deserializer
@@ -70,6 +71,7 @@ module JSONApi
 
     def deserialized_hash
       data = @response[:data]
+
       if data.is_a? Array
         data.map { |datum| @store.get(datum[:type], datum[:id], datum[:lid]) }
       else
@@ -81,7 +83,12 @@ module JSONApi
 
     def store_records(data)
       data.each do |datum|
-        record = Record.new(id: datum[:id], lid: datum[:lid]).merge(datum[:attributes] || {})
+        record = if self.class.configuration.support_lids
+          Record.new(id: datum[:id], lid: datum[:lid]).merge(datum[:attributes] || {})
+        else
+          Record.new(id: datum[:id]).merge(datum[:attributes] || {})
+        end
+
         @store.set(datum[:type], datum[:id], datum[:lid], record)
       end
     end
