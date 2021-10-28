@@ -424,7 +424,7 @@ describe JSONApi::Deserializer do
       end
     end
   end
-  
+
   context 'identification by lid' do
     context 'collection responses' do
       it 'are turned into a collection of Hashies' do

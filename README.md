@@ -38,6 +38,19 @@ one_deserialized = JSONApi::Deserializer.new(response).deserialized_hash
 # one_deserialized.name == 'fluffy'
 ```
 
+## Configuration
+
+Version 1.3.1 introduces the ability to configure the gem using an initializer file and block with following options:
+
+```
+JSONApi::Deserializer.configure do |config|
+  config.supports_lids = true
+end
+```
+
+Above are all options for configuration with the default of each configuration option.
+
+`supports_lids` - will include a `lid` key in each deserialized hash record. See JSONAPI spec '> 1.1' for more information on lids.
 
 ## Development
 
